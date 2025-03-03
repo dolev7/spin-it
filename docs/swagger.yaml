@@ -1,0 +1,46 @@
+definitions:
+  users.SignupRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  users.SignupResponse:
+    properties:
+      message:
+        example: User created successfully
+        type: string
+    type: object
+info:
+  contact: { }
+  version: '1.0'
+  title: spin-it
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user in the system
+      parameters:
+      - description: User signup data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/users.SignupResponse'
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+      summary: Create a new user
+      tags:
+      - user
+swagger: "2.0"
