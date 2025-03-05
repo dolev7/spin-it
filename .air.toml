@@ -1,0 +1,10 @@
+[build]
+cmd = "swag init -g cmd/user-service/main.go && go build -o ./tmp/main.exe cmd/user-service/main.go"
+exclude_dir = ["assets", "tmp", "vendor"]
+
+[color]
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+

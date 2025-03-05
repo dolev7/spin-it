@@ -7,17 +7,17 @@ import (
 )
 
 // DB is a global database connection
-var DB *sql.DB
+var PostgresDB *sql.DB
 
 // InitDB initializes the PostgreSQL database connection
 func InitDB(connStr string) error {
 	var err error
-	DB, err = sql.Open("postgres", connStr)
+	PostgresDB, err = sql.Open("postgres", connStr)
 	if err != nil {
 		return err
 	}
 
-	err = DB.Ping()
+	err = PostgresDB.Ping()
 	if err != nil {
 		logger.Log.Errorf("Error connecting to database: %v", err)
 		return err

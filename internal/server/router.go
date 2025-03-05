@@ -11,6 +11,11 @@ import (
 func SetupRouter() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/users", users.SignupHandler).Methods("POST")
+	router.HandleFunc("/users/login", users.LoginHandler).Methods("POST")
+
+	protected := router.PathPrefix("/api").Subrouter()
+	protected.Use(AuthMiddleware)
+	protected.HandleFunc("/users/me", users.GetProfileHandler).Methods("GET")
 
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 	router.HandleFunc("/swagger/doc.json", func(w http.ResponseWriter, r *http.Request) {

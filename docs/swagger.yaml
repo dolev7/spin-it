@@ -1,22 +1,59 @@
 definitions:
-  users.SignupRequest:
+  users.UserAuthRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: securepassword
+        type: string
+    type: object
+  users.UserAuthResponse:
+    properties:
+      message:
+        example: Authentication successful
+        type: string
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  users.UserProfileResponse:
     properties:
       email:
         type: string
-      password:
-        type: string
-    type: object
-  users.SignupResponse:
-    properties:
-      message:
-        example: User created successfully
-        type: string
+      id:
+        type: integer
     type: object
 info:
-  contact: { }
-  version: '1.0'
-  title: spin-it
+  contact: {}
 paths:
+  /api/users/me:
+    get:
+      consumes:
+      - application/json
+      description: Returns the authenticated user's profile information
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Get user profile
+      tags:
+      - user
   /users:
     post:
       consumes:
@@ -28,19 +65,45 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/users.SignupRequest'
+          $ref: '#/definitions/users.UserAuthRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/users.SignupResponse'
+            $ref: '#/definitions/users.UserAuthResponse'
         "400":
-          description: Invalid request
+          description: Bad Request
           schema:
             type: string
       summary: Create a new user
+      tags:
+      - user
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT token
+      parameters:
+      - description: User credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/users.UserAuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserAuthResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+      summary: User login
       tags:
       - user
 swagger: "2.0"
